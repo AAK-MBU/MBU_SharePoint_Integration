@@ -3,8 +3,8 @@ requires = ["setuptools>=65.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sharepoint_class"
-version = "1.0.3"
+name = "mbu_msoffice_integration"   # 👈 must match the PyPI project name
+version = "1.0.4"
 authors = [
   { name="MBU", email="rpa@mbu.aarhus.dk" },
 ]

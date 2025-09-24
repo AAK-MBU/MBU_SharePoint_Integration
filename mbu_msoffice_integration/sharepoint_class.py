@@ -46,7 +46,6 @@ from openpyxl import load_workbook
 
 import pandas as pd
 
-from office365.runtime.auth.user_credential import UserCredential
 from office365.sharepoint.client_context import ClientContext
 from office365.sharepoint.files.file import File
 
@@ -65,17 +64,19 @@ class Sharepoint:
     """
 
     def __init__(
-        self, username: str, password: str, site_url: str, site_name: str, document_library: str
+            self, tenant: str, client_id: str, thumbprint: str, cert_path: str, site_url: str, site_name: str, document_library: str
     ):
         """Initializes the Sharepoint class with credentials and site details."""
-        self.username = username
-        self.password = password
+        self.tenant = tenant
+        self.client_id = client_id
+        self.thumbprint = thumbprint
+        self.cert_path = cert_path
         self.site_url = site_url
         self.site_name = site_name
         self.document_library = document_library
         self.ctx = self._auth()
 
-    def _auth(self) -> Optional[ClientContext]:
+    def _auth(self):
         """
         Authenticates to the SharePoint site and returns the client context.
 
@@ -85,9 +86,16 @@ class Sharepoint:
         """
         try:
             site_full_url = f"{self.site_url}/teams/{self.site_name}"
-            ctx = ClientContext(site_full_url).with_credentials(
-                UserCredential(self.username, self.password)
+            ctx = ClientContext(site_full_url).with_client_certificate(
+                tenant=self.tenant,
+                client_id=self.client_id,
+                thumbprint=self.thumbprint,
+                cert_path=self.cert_path
             )
+            web = ctx.web
+            ctx.load(web)
+            ctx.execute_query()
+            print(f"Authenticated successfully. Site Title: {web.properties['Title']}")
             return ctx
         except Exception as e:
             print(f"Failed to authenticate: {e}")

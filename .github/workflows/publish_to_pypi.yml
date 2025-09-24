@@ -37,7 +37,7 @@ jobs:
 
         environment:
             name: release
-            url: https://pypi.org/p/mbu_sharepoint_integration/
+            url: https://pypi.org/p/mbu_msoffice_integration/
 
         permissions:
             id-token: write 
